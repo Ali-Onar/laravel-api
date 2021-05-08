@@ -15,7 +15,7 @@ class MovieController extends Controller
      */
     public function index()
     {
-        //
+        return Movie::all();
     }
 
     /**
@@ -44,7 +44,13 @@ class MovieController extends Controller
      */
     public function show($id)
     {
-        //
+        $movie = Movie::find($id);
+        return [
+            'title' => $movie->title,
+            'overview' => $movie->overview,
+            'poster' => $movie->poster,
+            'adult' => $movie->adult
+        ];
     }
 
     /**
@@ -67,7 +73,21 @@ class MovieController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $movie = Movie::find($id);
+
+        // $movie->title = $request->title;
+        // $movie->overview = $request->overview;
+        // $movie->poster = $request->poster;
+        // $movie->adult = $request->adult;
+        // $movie->save();
+
+        $movie->update ([
+            'title' => $request->title,
+            'overview' => $request->overview,
+            'poster' => $request->poster,
+            'adult' => $request->adult
+        ]);
+        return $movie;
     }
 
     /**

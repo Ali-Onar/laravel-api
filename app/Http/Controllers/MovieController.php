@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MovieRequest;
+use App\Http\Resources\MovieResource;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 
@@ -15,7 +17,7 @@ class MovieController extends Controller
      */
     public function index()
     {
-        return Movie::all();
+        return MovieResource::collection(Movie::paginate(3));
     }
 
     /**
@@ -24,7 +26,7 @@ class MovieController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(MovieRequest $request)
     {
         $movie = new Movie();
         $movie->title = $request->title;
@@ -42,15 +44,9 @@ class MovieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Movie $movie)
     {
-        $movie = Movie::find($id);
-        return [
-            'title' => $movie->title,
-            'overview' => $movie->overview,
-            'poster' => $movie->poster,
-            'adult' => $movie->adult
-        ];
+        return new MovieResource($movie);
     }
 
     /**
@@ -71,16 +67,8 @@ class MovieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Movie $movie)
     {
-        $movie = Movie::find($id);
-
-        // $movie->title = $request->title;
-        // $movie->overview = $request->overview;
-        // $movie->poster = $request->poster;
-        // $movie->adult = $request->adult;
-        // $movie->save();
-
         $movie->update ([
             'title' => $request->title,
             'overview' => $request->overview,
@@ -96,8 +84,10 @@ class MovieController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Movie $movie)
     {
-        //
+        $movie->delete();
+
+        return response('Succesfully deleted!');
     }
 }
